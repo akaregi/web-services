@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  wikijs:
+    image: requarks/wiki:2
+    container_name: wikijs
+    restart: always
+    depends_on:
+      - wikidb
+    networks:
+      - shared
+      - wikijs_internal
+
+    # env
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+
+    # traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.services.wikijs.loadbalancer.server.port=3000
+      - traefik.http.routers.wikijs.rule=Host(`wiki.${HOST}`)
+      - traefik.http.routers.wikijs.entrypoints=websecure
+      - traefik.http.routers.wikijs.tls.certresolver=letsencrypt
+
+  wikidb:
+    image: postgres:14-alpine
+    restart: always
+    networks:
+      - wikijs_internal
+
+    # env
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+
+    # volume
+    volumes:
+      - ./db:/var/lib/postgresql/data
+
+networks:
+  shared:
+    name: shared
+  wikijs_internal:
+    internal: true
