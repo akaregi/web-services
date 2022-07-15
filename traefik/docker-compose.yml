@@ -23,8 +23,10 @@ services:
       # - --api.insecure=true
 
       # entry points
-      - --entryPoints.web.address=:80
-      - --entryPoints.websecure.address=:443
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+      - --entrypoints.websecure.address=:443
 
       # Certificate
       - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
@@ -36,12 +38,6 @@ services:
     labels:
       # casting a spell
       - traefik.enable=true
-
-      # redirect to https
-      - traefik.http.routers.http-catchall.entryPoint=web
-      - traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)
-      - traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
 
     # env
     environment:
