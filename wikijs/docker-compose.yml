@@ -14,7 +14,7 @@ services:
     # env
     environment:
       - DB_TYPE=postgres
-      - DB_HOST=db
+      - DB_HOST=wikidb
       - DB_PORT=5432
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
