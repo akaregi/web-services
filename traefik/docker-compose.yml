@@ -23,8 +23,8 @@ services:
       # - --api.insecure=true
 
       # entry points
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
+      - --entryPoints.web.address=:80
+      - --entryPoints.websecure.address=:443
 
       # Certificate
       - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
