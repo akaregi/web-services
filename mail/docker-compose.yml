@@ -1,32 +1,42 @@
 services:
   mailserver:
-    image: docker.io/mailserver/docker-mailserver:latest
+    image: mailserver/docker-mailserver:latest
     container_name: mailserver
-    # If the FQDN for your mail-server is only two labels (eg: example.com),
-    # you can assign this entirely to `hostname` and remove `domainname`.
+    restart: always
+    stop_grace_period: 1m
+
+    # domain
     hostname: mail
-    domainname: example.com
-    env_file: mailserver.env
-    # More information about the mail-server ports:
-    # https://docker-mailserver.github.io/docker-mailserver/edge/config/security/understanding-the-ports/
-    # To avoid conflicts with yaml base-60 float, DO NOT remove the quotation marks.
+    domainname: azure.icu
+
     ports:
-      - "25:25" # SMTP  (explicit TLS => STARTTLS)
-      - "143:143" # IMAP4 (explicit TLS => STARTTLS)
-      - "465:465" # ESMTP (implicit TLS)
-      - "587:587" # ESMTP (explicit TLS => STARTTLS)
-      - "993:993" # IMAP4 (implicit TLS)
+      - "25:25" # outbound smtp
+      - "587:587" # inbound smtp
+
+    environment:
+      - SSL_TYPE=letsencrypt
+      - SSL_DOMAIN=mail.azure.icu
     volumes:
+      - ../traefik/letsencrypt/acme.json:/etc/letsencrypt/acme.json:ro
       - ./docker-data/dms/mail-data/:/var/mail/
       - ./docker-data/dms/mail-state/:/var/mail-state/
       - ./docker-data/dms/mail-logs/:/var/log/mail/
       - ./docker-data/dms/config/:/tmp/docker-mailserver/
       - /etc/localtime:/etc/localtime:ro
-    restart: always
-    stop_grace_period: 1m
+
     cap_add:
       - NET_ADMIN
+
     healthcheck:
       test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
       timeout: 3s
       retries: 0
+
+  whoami:
+    image: traefik/whoami:latest
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.routers.whoami.rule=Host(`mail.example.com`)
+      - traefik.http.routers.whoami.entrypoints=websecure
+      - traefik.http.routers.whoami.tls.certresolver=letsencrypt
