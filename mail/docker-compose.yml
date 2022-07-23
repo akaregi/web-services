@@ -41,5 +41,5 @@ services:
       - traefik.http.routers.whoami.rule=Host(`mail.azure.icu`)
       - traefik.http.routers.whoami.entrypoints=websecure
       - traefik.http.routers.whoami.tls.certresolver=letsencrypt
-    command:
-      - --port 4000
+    environment:
+      - WHOAMI_PORT_NUMBER=4000
