@@ -44,3 +44,7 @@ services:
       - traefik.http.routers.whoami.tls.certresolver=letsencrypt
     environment:
       - WHOAMI_PORT_NUMBER=4000
+
+networks:
+  shared:
+    name: shared
