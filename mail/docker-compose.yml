@@ -34,6 +34,7 @@ services:
 
   whoami:
     image: traefik/whoami:latest
+    container_name: mail-whoami
     labels:
       - traefik.enable=true
       - traefik.docker.network=shared
