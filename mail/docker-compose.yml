@@ -37,6 +37,9 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=shared
+      - traefik.http.services.whoami.loadbalancer.server.port=4000
       - traefik.http.routers.whoami.rule=Host(`mail.azure.icu`)
       - traefik.http.routers.whoami.entrypoints=websecure
       - traefik.http.routers.whoami.tls.certresolver=letsencrypt
+    command:
+      - --port 4000
