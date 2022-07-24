@@ -47,7 +47,7 @@ services:
     # volume
     volumes:
       - ./letsencrypt:/letsencrypt
-      - ${DOCKER_HOST}:/var/run/docker.sock:ro
+      - ${DOCKER_SOCK}:/var/run/docker.sock:ro
 
 networks:
   shared:
