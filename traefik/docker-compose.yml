@@ -46,8 +46,10 @@ services:
 
     # volume
     volumes:
-      - ${DOCKER_HOST}:/var/run/docker.sock:ro # mandatory
       - ./letsencrypt:/letsencrypt
+      - type: bind
+        source: ${DOCKER_HOST}
+        target: /var/run/docker.sock:ro
 
 networks:
   shared:
