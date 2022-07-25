@@ -49,4 +49,4 @@ networks:
   shared:
     name: shared
   wikijs_internal:
-    name: wikijs_internal
+    internal: true
