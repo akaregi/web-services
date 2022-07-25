@@ -37,12 +37,12 @@ services:
     labels:
       # casting a spell
       - traefik.enable=true
-      - traefik.http.routers.dashboard.rule=Host(`traefik.azure.icu`) && PathPrefix(`/dashboard`)
+      - traefik.http.routers.dashboard.rule=Host(`traefik.azure.icu`) && PathPrefix(`/api`) || PathPrefix(`/dashboard`)
       - traefik.http.routers.dashboard.service=api@internal
       - traefik.http.routers.dashboard.middlewares=auth
       - traefik.http.routers.dashboard.entrypoints=websecure
       - traefik.http.routers.dashboard.tls.certresolver=letsencrypt
-      - traefik.http.middlewares.auth.basicauth.users=${DASHBOARD_ADMIN}
+      - traefik.http.middlewares.test-auth.digestauth.users=${DASHBOARD_ADMIN}
 
     # env
     environment:
