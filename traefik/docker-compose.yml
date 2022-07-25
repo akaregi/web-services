@@ -19,6 +19,7 @@ services:
       - --providers.docker.exposedbydefault=false
 
       # dashboard
+      - --api=true
       - --api.dashboard=true
 
       # entry points
