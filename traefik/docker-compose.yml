@@ -20,10 +20,6 @@ services:
 
       # dashboard
       - --api.dashboard=true
-      - traefik.http.routers.dashboard.rule=Host(`traefik.example.com`) && PathPrefix(`/dashboard`))
-      - traefik.http.routers.dashboard.service=api@internal
-      - traefik.http.routers.dashboard.middlewares=auth
-      - traefik.http.middlewares.auth.basicauth.users=${DASHBOARD_ADMIN}
 
       # entry points
       - --entrypoints.web.address=:80
@@ -41,6 +37,10 @@ services:
     labels:
       # casting a spell
       - traefik.enable=true
+      - traefik.http.routers.dashboard.rule=Host(`traefik.example.com`) && PathPrefix(`/dashboard`))
+      - traefik.http.routers.dashboard.service=api@internal
+      - traefik.http.routers.dashboard.middlewares=auth
+      - traefik.http.middlewares.auth.basicauth.users=${DASHBOARD_ADMIN}
 
     # env
     environment:
