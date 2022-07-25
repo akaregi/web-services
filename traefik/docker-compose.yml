@@ -42,7 +42,7 @@ services:
       - traefik.http.routers.dashboard.middlewares=auth
       - traefik.http.routers.dashboard.entrypoints=websecure
       - traefik.http.routers.dashboard.tls.certresolver=letsencrypt
-      - traefik.http.middlewares.test-auth.digestauth.users=${DASHBOARD_ADMIN}
+      - traefik.http.middlewares.auth.digestauth.users=${DASHBOARD_ADMIN}
 
     # env
     environment:
