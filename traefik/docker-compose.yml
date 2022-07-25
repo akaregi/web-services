@@ -22,6 +22,15 @@ services:
       - --api=true
       - --api.dashboard=true
 
+      # Log
+      - --log.filepath=/var/log/traefik/traefik.json
+      - --log.format=json
+
+      # Access Log
+      - --accesslog=true
+      - --accesslog.filepath=/var/log/traefik/access.json
+      - --accesslog.format=json
+
       # entry points
       - --entrypoints.web.address=:80
       - --entrypoints.web.http.redirections.entryPoint.to=websecure
@@ -53,6 +62,7 @@ services:
     # volume
     volumes:
       - ./letsencrypt:/letsencrypt
+      - ./logs:/var/log/traefik
       - ${DOCKER_SOCK}:/var/run/docker.sock:ro
 
 networks:
