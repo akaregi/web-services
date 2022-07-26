@@ -5,6 +5,8 @@ services:
     image: prom/prometheus:main
     container_name: prometheus
     restart: always
+    ports:
+      - 9090:9090
     networks:
       - shared
 
@@ -23,7 +25,6 @@ services:
 
     volumes:
       - ./prometheus:/etc/prometheus
-      - ./prometheus-data:/prometheus
 
   # grafana:
   #   image: grafana/grafana:main
