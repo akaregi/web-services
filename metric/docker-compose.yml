@@ -28,7 +28,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=shared
       - traefik.http.services.grafana.loadbalancer.server.port=3000
-      - traefik.http.routers.grafana.rule=Host(`traefik.azure.icu`) && PathPrefix(`/grafana`)
+      - traefik.http.routers.grafana.rule=Host(`grafana.azure.icu`)
       - traefik.http.routers.grafana.entrypoints=websecure
       - traefik.http.routers.grafana.tls.certresolver=letsencrypt
 
