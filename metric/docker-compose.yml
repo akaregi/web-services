@@ -23,6 +23,8 @@ services:
     image: grafana/grafana-oss:main
     container_name: grafana
     restart: always
+    networks:
+      - shared
 
     labels:
       - traefik.enable=true
