@@ -16,13 +16,6 @@ services:
       - "--web.console.libraries=/usr/share/prometheus/console_libraries"
       - "--web.console.templates=/usr/share/prometheus/consoles"
 
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=shared
-      - traefik.http.routers.prometheus.rule=Host(`traefik.azure.icu`) && PathPrefix(`/prometheus`)
-      - traefik.http.routers.prometheus.entrypoints=websecure
-      - traefik.http.routers.prometheus.tls.certresolver=letsencrypt
-
     volumes:
       - ./prometheus:/etc/prometheus
 
