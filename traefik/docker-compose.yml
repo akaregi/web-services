@@ -41,7 +41,7 @@ services:
       - --entrypoints.websecure.address=:443
 
       # For Prometheus / Grafana
-      - --entrypoints.metrics.address=8082
+      - --entrypoints.metrics.address=:8082
 
       # Metrics (Prometheus)
       - --metrics.prometheus=true
