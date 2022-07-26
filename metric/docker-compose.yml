@@ -19,9 +19,18 @@ services:
     volumes:
       - ./prometheus:/etc/prometheus
 
-  # grafana:
-  #   image: grafana/grafana:main
-  #   container_name: grafana
+  grafana:
+    image: grafana/grafana-oss:main
+    container_name: grafana
+    restart: always
+
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.services.grafana.loadbalancer.server.port=3000
+      - traefik.http.routers.grafana.rule=Host(`traefik.azure.icu`) && PathPrefix(`/grafana`)
+      - traefik.http.routers.grafana.entrypoints=websecure
+      - traefik.http.routers.grafana.tls.certresolver=letsencrypt
 
 networks:
   shared:
