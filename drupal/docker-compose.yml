@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  drupal:
+    image: drupal:10
+    container_name: drupal
+    restart: always
+    depends_on:
+      - drupal_db
+    ports:
+      - 8080:80
+    networks:
+      - shared
+      - drupal_internal
+
+    # env
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=drupal
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+
+    # traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.services.drupal.loadbalancer.server.port=8080
+      - traefik.http.routers.drupal.rule=Host(`drupal.azure.icu`)
+      - traefik.http.routers.drupal.entrypoints=websecure
+      - traefik.http.routers.drupal.tls.certresolver=letsencrypt
+
+  drupal_db:
+    image: postgres:15-alpine
+    restart: always
+    networks:
+      - drupal_internal
+
+    # env
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+
+    # volume
+    volumes:
+      - ./db:/var/lib/postgresql/data
+
+networks:
+  shared:
+    name: shared
+  drupal_internal:
+    internal: true
