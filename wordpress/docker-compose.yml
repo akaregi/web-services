@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  wordpress:
+    image: wordpress:6-apache
+    container_name: wordpress
+    restart: always
+    depends_on:
+      - wp_db
+    networks:
+      - shared
+      - wordpress_internal
+
+    # env
+    environment:
+      - DB_TYPE=postgres
+      - WORDPRESS_DB_HOST=wp_db
+      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASS}
+      - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+
+    # traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.services.wordpress.loadbalancer.server.port=80
+      - traefik.http.routers.wordpress.rule=Host(`wp.azure.icu`)
+      - traefik.http.routers.wordpress.entrypoints=websecure
+      - traefik.http.routers.wordpress.tls.certresolver=letsencrypt
+
+  wp_db:
+    image: mariadb:11
+    restart: always
+    networks:
+      - wordpress_internal
+
+    # env
+    environment:
+      - MARIADB_USER=${WORDPRESS_DB_USER}
+      - MARIADB_DATABASE=${WORDPRESS_DB_NAME}
+      - MARIADB_ROOT_PASSWORD=${WORDPRESS_DB_PASS}
+
+    # volume
+    volumes:
+      - ./mariadb:/var/lib/mysql
+
+networks:
+  shared:
+    name: shared
+  wordpress_internal:
+    internal: true
