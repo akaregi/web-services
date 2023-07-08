@@ -40,7 +40,8 @@ services:
     environment:
       - MARIADB_USER=${WORDPRESS_DB_USER}
       - MARIADB_DATABASE=${WORDPRESS_DB_NAME}
-      - MARIADB_ROOT_PASSWORD=${WORDPRESS_DB_PASS}
+      - MARIADB_PASSWORD=${WORDPRESS_DB_PASS}
+      - MARIADB_RANDOM_ROOT_PASSWORD=yes
 
     # volume
     volumes:
