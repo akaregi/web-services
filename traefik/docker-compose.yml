@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   traefik:
-    image: traefik:vacherin
+    image: traefik:beaufort
     container_name: traefik
     restart: always
     ports:
