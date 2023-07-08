@@ -7,8 +7,6 @@ services:
     restart: always
     depends_on:
       - drupal_db
-    ports:
-      - 8080:80
     networks:
       - shared
       - drupal_internal
@@ -32,7 +30,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=shared
-      - traefik.http.services.drupal.loadbalancer.server.port=8080
+      - traefik.http.services.drupal.loadbalancer.server.port=80
       - traefik.http.routers.drupal.rule=Host(`drupal.azure.icu`)
       - traefik.http.routers.drupal.entrypoints=websecure
       - traefik.http.routers.drupal.tls.certresolver=letsencrypt
