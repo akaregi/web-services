@@ -30,7 +30,7 @@ services:
       - traefik.http.routers.wikijs.tls.certresolver=letsencrypt
 
   wikidb:
-    image: postgres:14-alpine
+    image: postgres:15-alpine
     restart: always
     networks:
       - wikijs_internal
