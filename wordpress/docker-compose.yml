@@ -13,11 +13,13 @@ services:
 
     # env
     environment:
-      - DB_TYPE=postgres
       - WORDPRESS_DB_HOST=wp_db
       - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
       - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASS}
       - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+
+    volumes:
+      - ./wordpress:/var/www/html
 
     # traefik
     labels:
