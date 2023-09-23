@@ -6,8 +6,8 @@ services:
     container_name: "misskey"
     restart: always
     depends_on:
-      - db
-      - redis
+      - mi_db
+      - mi_redis
     networks:
       - shared
       - misskey_internal
