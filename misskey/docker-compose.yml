@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  misskey:
+    image: misskey/misskey:13.14.2
+    container_name: "misskey"
+    restart: always
+    depends_on:
+      - db
+      - redis
+    networks:
+      - shared
+      - misskey_internal
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.services.misskey.loadbalancer.server.port=3000
+      - traefik.http.routers.misskey.rule=Host(`${MISSKEY_URL}`)
+      - traefik.http.routers.misskey.entrypoints=websecure
+      - traefik.http.routers.misskey.tls.certresolver=letsencrypt
+    volumes:
+      - ./files:/misskey/files
+      - ./.config/misskey:/misskey/.config:ro
+
+  mi_redis:
+    image: redis:7-alpine
+    container_name: "redis"
+    restart: always
+    volumes:
+      - ./redis:/data
+    networks:
+      - misskey_internal
+
+  mi_db:
+    image: postgres:15-alpine
+    container_name: "postgres"
+    restart: always
+    env_file:
+      - .config/database.env
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - misskey_internal
+
+networks:
+  shared:
+    name: shared
+  misskey_internal:
+    internal: true
