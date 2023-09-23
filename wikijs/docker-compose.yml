@@ -25,7 +25,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=shared
       - traefik.http.services.wikijs.loadbalancer.server.port=3000
-      - traefik.http.routers.wikijs.rule=Host(`wiki.azure.icu`)
+      - traefik.http.routers.wikijs.rule=Host(`${WIKI_URL}`)
       - traefik.http.routers.wikijs.entrypoints=websecure
       - traefik.http.routers.wikijs.tls.certresolver=letsencrypt
 

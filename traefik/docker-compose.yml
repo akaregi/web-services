@@ -56,7 +56,7 @@ services:
     labels:
       # casting a spell
       - traefik.enable=true
-      - traefik.http.routers.dashboard.rule=Host(`traefik.azure.icu`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      - traefik.http.routers.dashboard.rule=Host(`${TRAEFIK_URL}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       - traefik.http.routers.dashboard.service=api@internal
       - traefik.http.routers.dashboard.middlewares=auth
       - traefik.http.routers.dashboard.entrypoints=websecure
