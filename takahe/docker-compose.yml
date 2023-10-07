@@ -7,7 +7,6 @@ x-takahe-common:
       TAKAHE_ENVIRONMENT: "production"
       TAKAHE_DATABASE_SERVER: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@takahe_db/${POSTGRES_DB}"
       TAKAHE_SECRET_KEY: ${TAKAHE_SECRET_KEY}
-      TAKAHE_MEDIA_BACKEND: ${TAKAHE_MEDIA_BACKEND}
       TAKAHE_MAIN_DOMAIN: ${TAKAHE_MAIN_DOMAIN}
       TAKAHE_EMAIL_SERVER: ${TAKAHE_EMAIL_SERVER}
       TAKAHE_EMAIL_FROM: ${TAKAHE_EMAIL_FROM}
@@ -17,6 +16,11 @@ x-takahe-common:
       TAKAHE_VAPID_PRIVATE_KEY: ${TAKAHE_VAPID_PRIVATE_KEY}
       TAKAHE_CSRF_HOSTS: ${TAKAHE_CSRF_HOSTS}
       TAKAHE_CACHES_DEFAULT: ${TAKAHE_CACHES_DEFAULT}
+      # TAKAHE_MEDIA_BACKEND: ${TAKAHE_MEDIA_BACKEND}
+      TAKAHE_MEDIA_ROOT: "local:///media"
+      TAKAHE_MEDIA_URL: ""
+    volumes:
+      - ./media:/media
     networks:
       - shared
       - takahe_internal
