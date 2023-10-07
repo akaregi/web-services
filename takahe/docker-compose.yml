@@ -23,8 +23,6 @@ x-takahe-common:
     restart: on-failure
     depends_on:
       - takahe_db
-    volumes:
-      - ./takahe:/takahe/
 
 services:
   takahe_redis:
