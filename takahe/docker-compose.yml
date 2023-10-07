@@ -2,7 +2,7 @@ version: "3.8"
 
 x-takahe-common:
   &takahe-common
-    image: takahe:latest
+    image: jointakahe/takahe:latest
     environment:
       TAKAHE_ENVIRONMENT: "production"
       TAKAHE_DATABASE_SERVER: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@takahe_db/${POSTGRES_DB}"
