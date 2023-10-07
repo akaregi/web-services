@@ -65,7 +65,7 @@ services:
     <<: *takahe-common
     command: ["/takahe/manage.py", "runstator"]
     depends_on:
-      setup:
+      takahe_setup:
         condition: service_completed_successfully
 
   takahe_setup:
