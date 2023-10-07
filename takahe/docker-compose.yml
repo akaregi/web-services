@@ -1,0 +1,81 @@
+version: "3.8"
+
+x-takahe-common:
+  &takahe-common
+    image: takahe:latest
+    environment:
+      TAKAHE_ENVIRONMENT: "production"
+      TAKAHE_DATABASE_SERVER: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@takahe_db/${POSTGRES_DB}"
+      TAKAHE_SECRET_KEY: ${TAKAHE_SECRET_KEY}
+      TAKAHE_MEDIA_BACKEND: ${TAKAHE_MEDIA_BACKEND}
+      TAKAHE_MAIN_DOMAIN: ${TAKAHE_MAIN_DOMAIN}
+      TAKAHE_EMAIL_SERVER: ${TAKAHE_EMAIL_SERVER}
+      TAKAHE_EMAIL_FROM: ${TAKAHE_EMAIL_FROM}
+      TAKAHE_AUTO_ADMIN_EMAIL: ${TAKAHE_AUTO_ADMIN_EMAIL}
+      TAKAHE_USE_PROXY_HEADERS: "true"
+      TAKAHE_VAPID_PUBLIC_KEY: ${TAKAHE_VAPID_PUBLIC_KEY}
+      TAKAHE_VAPID_PRIVATE_KEY: ${TAKAHE_VAPID_PRIVATE_KEY}
+      TAKAHE_CSRF_HOSTS: ${TAKAHE_CSRF_HOSTS}
+      TAKAHE_CACHES_DEFAULT: ${TAKAHE_CACHES_DEFAULT}
+    networks:
+      - shared
+      - takahe_internal
+    restart: on-failure
+    depends_on:
+      - takahe_db
+    volumes:
+      - ./takahe:/takahe/
+
+services:
+  takahe_redis:
+    image: redis:7-alpine
+    container_name: "redis"
+    restart: always
+    volumes:
+      - ./redis:/data
+    networks:
+      - takahe_internal
+
+  takahe_db:
+    image: postgres:15-alpine
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}      
+    restart: always
+    networks:
+      - takahe_internal
+
+  web:
+    <<: *takahe-common
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.services.takahe.loadbalancer.server.port=8000
+      - traefik.http.routers.takahe.rule=Host(`${TAKAHE_MAIN_DOMAIN}`)
+      - traefik.http.routers.takahe.entrypoints=websecure
+      - traefik.http.routers.takahe.tls.certresolver=letsencrypt
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  takahe_stator:
+    <<: *takahe-common
+    command: ["/takahe/manage.py", "runstator"]
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  takahe_setup:
+    <<: *takahe-common
+    restart: "no"
+    command: >
+      bash -c "/takahe/manage.py migrate && /takahe/manage.py collectstatic --noinput"
+
+networks:
+  shared:
+    name: shared
+  takahe_internal:
+    internal: true
