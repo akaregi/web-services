@@ -48,7 +48,7 @@ services:
     networks:
       - takahe_internal
 
-  web:
+  takahe_web:
     <<: *takahe-common
     labels:
       - traefik.enable=true
@@ -58,7 +58,7 @@ services:
       - traefik.http.routers.takahe.entrypoints=websecure
       - traefik.http.routers.takahe.tls.certresolver=letsencrypt
     depends_on:
-      setup:
+      takahe_setup:
         condition: service_completed_successfully
 
   takahe_stator:
