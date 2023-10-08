@@ -77,6 +77,6 @@ services:
 
 networks:
   shared:
-    name: shared
+    external: true
   takahe_internal:
     internal: true
