@@ -26,7 +26,7 @@ x-takahe-common:
       - takahe_internal
     restart: on-failure
     depends_on:
-      - takahe_db
+      - takahe-db
 
 services:
   redis:
