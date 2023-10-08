@@ -62,7 +62,7 @@ services:
       - traefik.http.routers.takahe.entrypoints=websecure
       - traefik.http.routers.takahe.tls.certresolver=letsencrypt
     depends_on:
-      setup:
+      takahe-setup:
         condition: service_completed_successfully
 
   stator:
@@ -70,7 +70,7 @@ services:
     container_name: "takahe-stator"
     command: ["/takahe/manage.py", "runstator"]
     depends_on:
-      setup:
+      takahe-setup:
         condition: service_completed_successfully
 
   setup:
