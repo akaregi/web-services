@@ -5,7 +5,7 @@ x-takahe-common:
     image: jointakahe/takahe:latest
     environment:
       TAKAHE_ENVIRONMENT: "production"
-      TAKAHE_DATABASE_SERVER: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@takahe_db/${POSTGRES_DB}"
+      TAKAHE_DATABASE_SERVER: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@takahe-db/${POSTGRES_DB}"
       TAKAHE_SECRET_KEY: ${TAKAHE_SECRET_KEY}
       TAKAHE_MAIN_DOMAIN: ${TAKAHE_MAIN_DOMAIN}
       TAKAHE_EMAIL_SERVER: ${TAKAHE_EMAIL_SERVER}
@@ -29,16 +29,18 @@ x-takahe-common:
       - takahe_db
 
 services:
-  takahe_redis:
+  redis:
     image: redis:7-alpine
+    container_name: "takahe-redis"
     restart: always
     volumes:
       - ./redis:/data
     networks:
       - takahe_internal
 
-  takahe_db:
+  db:
     image: postgres:15-alpine
+    container_name: "takahe-db"
     volumes:
       - ./db:/var/lib/postgresql/data
     environment:
@@ -49,8 +51,9 @@ services:
     networks:
       - takahe_internal
 
-  takahe_web:
+  web:
     <<: *takahe-common
+    container_name: "takahe-web"
     labels:
       - traefik.enable=true
       - traefik.docker.network=shared
@@ -59,18 +62,20 @@ services:
       - traefik.http.routers.takahe.entrypoints=websecure
       - traefik.http.routers.takahe.tls.certresolver=letsencrypt
     depends_on:
-      takahe_setup:
+      setup:
         condition: service_completed_successfully
 
-  takahe_stator:
+  stator:
     <<: *takahe-common
+    container_name: "takahe-stator"
     command: ["/takahe/manage.py", "runstator"]
     depends_on:
-      takahe_setup:
+      setup:
         condition: service_completed_successfully
 
-  takahe_setup:
+  setup:
     <<: *takahe-common
+    container_name: "takahe-setup"
     restart: "no"
     command: >
       bash -c "/takahe/manage.py migrate && /takahe/manage.py collectstatic --noinput"
