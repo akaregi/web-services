@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  gotosocial:
+    image: superseriousbusiness/gotosocial:latest
+    container_name: gotosocial    
+    volumes:
+      - ./gotosocial/data:/gotosocial/storage    
+    environment:
+      GTS_HOST: ${GTS_HOST}
+      GTS_DB_TYPE: sqlite
+      GTS_DB_ADDRESS: /gotosocial/storage/sqlite.db
+      GTS_LETSENCRYPT_ENABLED: "false"
+      TZ: Asia/Tokyo
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.services.gotosocial.loadbalancer.server.port=8080
+      - traefik.http.routers.gotosocial.rule=Host(`${TAKAHE_MAIN_DOMAIN}`)
+      - traefik.http.routers.gotosocial.entrypoints=websecure
+      - traefik.http.routers.gotosocial.tls.certresolver=letsencrypt    
+    restart: "always"
+    networks:
+      - shared
+
+networks:
+  shared:
+    external: true
