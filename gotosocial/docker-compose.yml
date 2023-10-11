@@ -4,6 +4,7 @@ services:
   gotosocial:
     image: superseriousbusiness/gotosocial:latest
     container_name: gotosocial
+    user: ${GTS_USER}
     volumes:
       - ./gotosocial/data:/gotosocial/storage
     environment:
