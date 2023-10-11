@@ -16,7 +16,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=shared
       - traefik.http.services.gotosocial.loadbalancer.server.port=8080
-      - traefik.http.routers.gotosocial.rule=Host(`${TAKAHE_MAIN_DOMAIN}`)
+      - traefik.http.routers.gotosocial.rule=Host(`${GTS_HOST}`)
       - traefik.http.routers.gotosocial.entrypoints=websecure
       - traefik.http.routers.gotosocial.tls.certresolver=letsencrypt    
     restart: "always"
