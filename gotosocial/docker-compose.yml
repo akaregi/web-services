@@ -7,12 +7,8 @@ services:
     user: ${GTS_USER}
     volumes:
       - ./gotosocial/data:/gotosocial/storage
-    environment:
-      GTS_HOST: ${GTS_HOST}
-      GTS_DB_TYPE: sqlite
-      GTS_DB_ADDRESS: /gotosocial/storage/sqlite.db
-      GTS_LETSENCRYPT_ENABLED: "false"
-      TZ: Asia/Tokyo
+    env_file:
+      - .env
     labels:
       - traefik.enable=true
       - traefik.docker.network=shared
