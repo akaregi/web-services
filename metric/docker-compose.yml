@@ -26,6 +26,9 @@ services:
     networks:
       - shared
 
+    env_file:
+      - .env
+
     labels:
       - traefik.enable=true
       - traefik.docker.network=shared
