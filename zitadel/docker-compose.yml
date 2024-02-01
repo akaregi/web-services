@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  zitadel:
+    extends:
+      service: zitadel-init
+    container_name: zitadel
+    restart: 'always'
+    networks:
+      - shared
+      - zitadel-internal
+    command: 'start-from-setup --init-projections --masterkey ${ZITADEL_MASTERKEY} --config /zitadel.yaml --steps /zitadel.yaml'
+    environment:
+      - ZITADEL_EXTERNALSECURE=true
+      - ZITADEL_TLS_ENABLED=false
+    volumes:
+      - './config/zitadel.yaml:/zitadel.yaml:ro'
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.services.zitadel.loadbalancer.server.port=8080
+      - traefik.http.routers.zitadel.rule=Host(`${ZITADEL_URL}`)
+      - traefik.http.routers.zitadel.entrypoints=websecure
+      - traefik.http.routers.zitadel.tls.certresolver=letsencrypt
+    depends_on:
+      zitadel-init:
+        condition: 'service_completed_successfully'
+      crdb:
+        condition: 'service_healthy'
+
+  zitadel-init:
+    image: 'ghcr.io/zitadel/zitadel:latest'
+    command: 'init --config /zitadel.yaml'
+    user: '$UID'
+    networks:
+      - zitadel-internal
+    environment:
+      - ZITADEL_EXTERNALDOMAIN=${ZITADEL_URL}
+      - ZITADEL_DATABASE_COCKROACH_HOST=crdb
+      - ZITADEL_LOGSTORE_ACCESS_STDOUT_ENABLED=true
+      - ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORDCHANGEREQUIRED=false
+    healthcheck:
+      test: ["CMD", "/app/zitadel", "ready"]
+      interval: '10s'
+      timeout: '5s'
+      retries: 5
+      start_period: '10s'
+    depends_on:
+      crdb:
+        condition: 'service_healthy'
+
+  crdb:
+    image: 'cockroachdb/cockroach:latest'
+    container_name: cockroachdb
+    restart: 'always'
+    networks:
+      - zitadel-internal
+    command: 'start-single-node --insecure'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health?ready=1"]
+      interval: '10s'
+      timeout: '30s'
+      retries: 5
+      start_period: '20s'
+
+networks:
+  zitadel-internal:
+    internal: true
+  shared:
+    external: true
