@@ -12,6 +12,7 @@ services:
     command: 'start-from-setup --init-projections --masterkey ${ZITADEL_MASTERKEY} --config /zitadel.yaml --steps /zitadel.yaml'
     environment:
       - ZITADEL_EXTERNALDOMAIN=${ZITADEL_URL}
+      - ZITADEL_EXTERNALPORT=443
       - ZITADEL_EXTERNALSECURE=true
       - ZITADEL_TLS_ENABLED=false
     volumes:
