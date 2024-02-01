@@ -1,11 +1,10 @@
 version: "3.9"
 services:
   keycloak:
-    image: keycloak/keycloak
+    image: quay.io/keycloak/keycloak:latest
     restart: always
     env_file: .env
-    command:
-      - "start --hostname=${KEYCLOAK_HOSTNAME}"
+    command: start
     networks:
       - shared
       - keycloak_internal
