@@ -5,7 +5,7 @@ services:
     restart: always
     env_file: .env
     command:
-      - start
+      - "start --hostname=${KEYCLOAK_HOSTNAME}"
     networks:
       - shared
       - keycloak_internal
