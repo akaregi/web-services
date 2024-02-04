@@ -1,0 +1,92 @@
+version: "3.8"
+
+services:
+  web:
+    image: ghcr.io/mastodon/mastodon:v4.2.0
+    restart: always
+    env_file: .env
+    command: bundle exec puma -C config/puma.rb
+    networks:
+      - shared
+      - mastodon_internal
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:3000/health || exit 1']
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.services.mastodon.loadbalancer.server.port=3000
+      - traefik.http.routers.mastodon.rule=Host(`${MASTODON_URL}`)
+      - traefik.http.routers.mastodon.entrypoints=websecure
+      - traefik.http.routers.mastodon.tls.certresolver=letsencrypt
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./public/system:/mastodon/public/system
+
+  streaming:
+    image: ghcr.io/mastodon/mastodon:v4.2.0
+    restart: always
+    env_file: .env
+    command: node ./streaming
+    networks:
+      - shared
+      - mastodon_internal
+    healthcheck:
+      # prettier-ignore
+      test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:4000/api/v1/streaming/health || exit 1']
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.services.mastodon-streaming.loadbalancer.server.port=4000
+      - traefik.http.routers.mastodon-streaming.rule=Host(`${MASTODON_URL}`) && PathPrefix(`/api/v1/streaming`)
+      - traefik.http.routers.mastodon-streaming.entrypoints=websecure
+      - traefik.http.routers.mastodon-streaming.tls.certresolver=letsencrypt
+    depends_on:
+      - db
+      - redis
+
+  sidekiq:
+    image: ghcr.io/mastodon/mastodon:v4.2.0
+    restart: always
+    env_file: .env
+    command: bundle exec sidekiq
+    depends_on:
+      - db
+      - redis
+    networks:
+      - shared
+      - mastodon_internal
+    volumes:
+      - ./public/system:/mastodon/public/system
+    healthcheck:
+      test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
+
+  redis:
+    restart: always
+    image: redis:7-alpine
+    networks:
+      - mastodon_internal
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+    volumes:
+      - ./redis:/data
+
+  db:
+    restart: always
+    image: postgres:14-alpine
+    shm_size: 256mb
+    networks:
+      - mastodon_internal
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'postgres']
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    environment:
+      - 'POSTGRES_HOST_AUTH_METHOD=trust'
+
+networks:
+  shared:
+    name: shared
+  mastodon_internal:
+    internal: true
