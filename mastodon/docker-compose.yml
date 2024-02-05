@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   web:
-    image: ghcr.io/mastodon/mastodon:v4.2.0
+    image: ghcr.io/glitch-soc/mastodon:latest
     restart: always
     env_file: .env
     command: bundle exec puma -C config/puma.rb
@@ -25,7 +25,7 @@ services:
       - ./public/system:/mastodon/public/system
 
   streaming:
-    image: ghcr.io/mastodon/mastodon:v4.2.0
+    image: ghcr.io/glitch-soc/mastodon:latest
     restart: always
     env_file: .env
     command: node ./streaming
@@ -47,7 +47,7 @@ services:
       - redis
 
   sidekiq:
-    image: ghcr.io/mastodon/mastodon:v4.2.0
+    image: ghcr.io/glitch-soc/mastodon:latest
     restart: always
     env_file: .env
     command: bundle exec sidekiq
