@@ -25,7 +25,7 @@ services:
       - ./public/system:/mastodon/public/system
 
   streaming:
-    image: ghcr.io/mastodon/mastodon:v4.2.0
+    image: ghcr.io/glitch-soc/mastodon:latest
     restart: always
     env_file: .env
     command: node ./streaming
