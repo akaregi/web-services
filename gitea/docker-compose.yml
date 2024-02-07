@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  gitea:
+    image: gitea/gitea:1.21.4
+    restart: always
+    env_file: .env
+    networks:
+      - shared
+      - gitea_internal
+    volumes:
+      - ./gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.services.gitea.loadbalancer.server.port=3000
+      - traefik.http.routers.gitea.rule=Host(`${GITEA_URL}`)
+      - traefik.http.routers.gitea.entrypoints=websecure
+      - traefik.http.routers.gitea.tls.certresolver=letsencrypt
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    env_file: .env
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    networks:
+      - gitea_internal
+
+networks:
+  shared:
+    external: true
+  gitea_internal:
+    internal: true
