@@ -9,8 +9,11 @@ services:
       - gitea_internal
     volumes:
       - ./gitea:/data
+      - /home/git/.ssh:/data/git/.ssh
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 2222:22
     labels:
       - traefik.enable=true
       - traefik.docker.network=shared
