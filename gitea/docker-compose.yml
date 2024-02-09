@@ -21,6 +21,9 @@ services:
       - traefik.http.routers.gitea.rule=Host(`${GITEA_URL}`)
       - traefik.http.routers.gitea.entrypoints=websecure
       - traefik.http.routers.gitea.tls.certresolver=letsencrypt
+      - traefik.tcp.routers.gitea-ssh.rule=HostSNI(`*`)
+      - traefik.tcp.routers.gitea-ssh.entrypoints=ssh
+      - traefik.tcp.services.gitea-ssh-svc.loadbalancer.server.port=22
 
   db:
     image: postgres:15-alpine

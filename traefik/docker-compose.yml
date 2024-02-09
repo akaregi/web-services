@@ -41,6 +41,9 @@ services:
       # For Prometheus / Grafana
       - --entrypoints.metrics.address=:8082
 
+      # For Gitea (SSH)
+      - --entrypoints.ssh.address=:22
+
       # Metrics (Prometheus)
       - --metrics.prometheus=true
       - --metrics.prometheus.entrypoint=metrics
