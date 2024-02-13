@@ -23,7 +23,7 @@ services:
     volumes:
       - ./database:/var/lib/postgresql/data
     ports:
-      - 54321:54321
+      - 54321:5432
     networks:
       - pleroma_internal
 
