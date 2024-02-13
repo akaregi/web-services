@@ -30,24 +30,8 @@ services:
       - --accesslog.filepath=/var/log/traefik/access.json
       - --accesslog.format=json
 
-      # entry points
-      # - --entrypoints.web.address=:80
-      # - --entrypoints.web.http.redirections.entryPoint.to=websecure
-      # - --entrypoints.web.http.redirections.entryPoint.scheme=https
-
       # For HTTPS
       - --entrypoints.websecure.address=:443
-
-      # For Prometheus / Grafana
-      - --entrypoints.metrics.address=:8082
-
-      # For Gitea (SSH)
-      - --entrypoints.ssh.address=:22
-
-      # Metrics (Prometheus)
-      - --metrics.prometheus=true
-      - --metrics.prometheus.entrypoint=metrics
-      - --metrics.prometheus.addRoutersLabels=true
 
       # Certificate
       - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
