@@ -1,0 +1,8 @@
+pleroma.example.com {
+  reverse_proxy localhost:4000
+  header_upstream Host {host}
+  header_upstream X-Forwarded-For {remote}
+
+  # Using Cloudflare Certs
+  tls /etc/ssl/certs/certificate.pem /etc/ssl/private/key.pem
+}

@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+   caddy:
+    image: caddy:latest
+    restart: always
+    network_mode: host
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+      - ./config:/etc/caddy:ro
+      - ./data:/data
+      - ./config:/config
+      - ./certs/certificate.pem:/etc/ssl/certs/certificate.pem:ro
+      - ./certs/key.pem:/etc/ssl/private/key.pem
