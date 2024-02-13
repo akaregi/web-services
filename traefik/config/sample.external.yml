@@ -1,0 +1,14 @@
+http:
+  routers:
+    soapbox:
+      entryPoints:
+        - websecure
+      rule: Host(`pleroma.example.com`)
+      service: soapbox
+      tls:
+        certResolver: letsencrypt
+  services:
+    soapbox:
+      loadBalancer:
+        servers:
+          - url: "http://localhost:4000"

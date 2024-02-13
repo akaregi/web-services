@@ -76,6 +76,8 @@ services:
       - ./letsencrypt:/letsencrypt
       - ./logs:/var/log/traefik
       - ${DOCKER_SOCK}:/var/run/docker.sock:ro
+      - ./config/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./config/external.yml:/etc/traefik/external.yml:ro
 
 networks:
   shared:
