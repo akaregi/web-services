@@ -11,7 +11,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=shared
       - traefik.http.services.pleroma.loadbalancer.server.address=localhost:4000
-      - traefik.http.routers.pleroma.rule=Host(`${pleroma_URL}`)
+      - traefik.http.routers.pleroma.rule=Host(`${PLEROMA_URL}`)
       - traefik.http.routers.pleroma.entrypoints=websecure
       - traefik.http.routers.pleroma.tls.certresolver=letsencrypt
 
