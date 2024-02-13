@@ -1,7 +1,22 @@
 version: "3.9"
 services:
+  pleroma:
+    image: traefik/whoami:v1.10
+    restart: always
+    env_file: .env
+    networks:
+      - shared
+      - pleroma_internal
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.services.pleroma.loadbalancer.server.address=localhost:4000
+      - traefik.http.routers.pleroma.rule=Host(`${PLEROMA_URL}`)
+      - traefik.http.routers.pleroma.entrypoints=websecure
+      - traefik.http.routers.pleroma.tls.certresolver=letsencrypt
+
   db:
-    container_name: soapbox-db
+    container_name: pleroma-db
     image: postgres:15-alpine
     restart: always
     env_file: .env
@@ -11,7 +26,10 @@ services:
       - 54321:5432
     networks:
       - shared
+      - pleroma_internal
 
 networks:
   shared:
     external: true
+  pleroma_internal:
+    internal: true

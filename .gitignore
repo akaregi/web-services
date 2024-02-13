@@ -1,6 +1,3 @@
 docker-data
 .env
 .vscode
-
-# For local configuration
-external.yml
