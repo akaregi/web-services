@@ -20,7 +20,20 @@ services:
       - ./n8n:/home/node/.n8n
     networks:
       - shared
+      - n8n-internal
+
+  n8n-mongo:
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+     - ./mongo:/data/db
+    networks:
+      - n8n-internal
 
 networks:
   shared:
     name: shared
+  n8n-internal:
+    internal: true
