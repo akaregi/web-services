@@ -18,6 +18,8 @@ services:
       - GENERIC_TIMEZONE=${N8N_GENERIC_TIMEZONE}
     volumes:
       - ./n8n:/home/node/.n8n
+    networks:
+      - shared
 
 networks:
   shared:
