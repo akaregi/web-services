@@ -22,6 +22,14 @@ services:
       - shared
       - n8n-internal
 
+  n8n-redis:
+    image: redis:latest
+    restart: always
+    volumes:
+     - ./redis:/data
+    networks:
+      - n8n-internal
+
   n8n-mongo:
     image: mongo:latest
     environment:
